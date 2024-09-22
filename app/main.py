@@ -7,6 +7,8 @@ import sys
 def match_pattern(input_line, pattern):
     if len(pattern) == 1:
         return pattern in input_line
+    elif len(pattern.split()) > 1:
+        return all(match_pattern(input_line, p) for p in pattern.split())
     elif pattern == "\\d":
         return any(c.isdigit() for c in input_line)
     elif pattern == "\\w":
@@ -15,8 +17,11 @@ def match_pattern(input_line, pattern):
         if pattern[1] == '^':
             return not any(c in pattern[2:-1] for c in input_line)
         return any(c in pattern[1:-1] for c in input_line)
+    elif pattern in input_line:
+        return True
     else:
-        raise RuntimeError(f"Unhandled pattern: {pattern}")
+        return False
+        #raise RuntimeError(f"Unhandled pattern: {pattern}")
 
 
 def main():
