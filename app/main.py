@@ -9,7 +9,9 @@ def match_pattern(input_line, pattern):
     print("")
 
     # Base cases
-    if not pattern: return True
+    if not pattern: 
+        print("Hit!")
+        return True
     if not input_line: return False
     
     # Matching a singular character
@@ -24,36 +26,14 @@ def match_pattern(input_line, pattern):
             return match_pattern(input_line[1:], pattern[2:])
 
     # Match group
-    #if pattern[0] == '[':
-    #    opposite, i, group = 1, 1, set()
-    #    if pattern[1] == '^': 
-    #        i, opposite = 2, 0
-    #    while pattern[i] != ']':
-    #        group.add(pattern[i])
-    #    if input_line[0] in group == opposite:
-    #        return match_pattern(input_line[1:], pattern[i+1:])
     if pattern[0] == '[' and pattern[-1] == ']':
         if pattern[1] == '^':
             return not any(c in pattern[2:-1] for c in input_line)
         return any(c in pattern[1:-1] for c in input_line)
 
     # Nothing found
+    print("L")
     return False
-
-#def match_pattern(input_line, pattern):
-#    if len(pattern) == 1:
-#        return pattern in input_line
-#    elif pattern == "\\d":
-#        return any(c.isdigit() for c in input_line)
-#    elif pattern == "\\w":
-#        return any(c.isalnum() for c in input_line)
-#    elif pattern[0] == '[' and pattern[-1] == ']':
-#        if pattern[1] == '^':
-#            return not any(c in pattern[2:-1] for c in input_line)
-#        return any(c in pattern[1:-1] for c in input_line)
-#
-#    return pattern in input_line
-
 
 def main():
     pattern = sys.argv[2]
@@ -63,12 +43,13 @@ def main():
         print("Expected first argument to be '-E'")
         exit(1)
 
-    if any(match_pattern(input_line[i:], pattern) for i in range(len(input_line))):
-        print("Hit!")
+    # Anchors happen here
+    if pattern[0] == '^':
+        exit(0) if match_pattern(input_line, pattern[1:]) else exit(1)
+    elif any(match_pattern(input_line[i:], pattern) for i in range(len(input_line))):
         exit(0)
-    else:
-        print("L")
-        exit(1)
+    print("massive L")
+    exit(1)
 
 
 if __name__ == "__main__":
