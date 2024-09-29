@@ -24,14 +24,18 @@ def match_pattern(input_line, pattern):
             return match_pattern(input_line[1:], pattern[2:])
 
     # Match group
-    if pattern[0] == '[':
-        opposite, i, group = 1, 1, set() # i chose to make a set because I could guarantee that I'd leave the []
-        if pattern[1] == '^': 
-            i, opposite = 2, 0
-        while pattern[i] != ']':
-            group.add(pattern[i])
-        if input_line[0] in group == opposite:
-            return match_pattern(input_line[1:], pattern[i+1:])
+    #if pattern[0] == '[':
+    #    opposite, i, group = 1, 1, set()
+    #    if pattern[1] == '^': 
+    #        i, opposite = 2, 0
+    #    while pattern[i] != ']':
+    #        group.add(pattern[i])
+    #    if input_line[0] in group == opposite:
+    #        return match_pattern(input_line[1:], pattern[i+1:])
+    if pattern[0] == '[' and pattern[-1] == ']':
+        if pattern[1] == '^':
+            return not any(c in pattern[2:-1] for c in input_line)
+        return any(c in pattern[1:-1] for c in input_line)
 
     # Nothing found
     return False
