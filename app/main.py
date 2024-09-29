@@ -46,6 +46,14 @@ def main():
     # Anchors happen here
     if pattern[0] == '^':
         exit(0) if match_pattern(input_line, pattern[1:]) else exit(1)
+    elif pattern[-1] == '$':
+        pattern, input_line = list(pattern[::-1]), input_line[::-1]
+        for i in range(len(pattern)):
+            if pattern[i] == '[': pattern[i] = ']'
+            if pattern[i] == ']': pattern[i] = '['
+        pattern = ''.join(pattern[1:])
+        exit(0) if match_pattern(input_line, pattern) else exit(1)
+
     elif any(match_pattern(input_line[i:], pattern) for i in range(len(input_line))):
         exit(0)
     print("massive L")
