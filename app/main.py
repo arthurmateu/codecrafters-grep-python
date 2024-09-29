@@ -23,8 +23,8 @@ def match_pattern(input_line, pattern):
             return match_pattern(input_line[1:], pattern[i+2:])
         elif pattern[1] == '?':
             i = 0
-            while pattern[i] == input_line[0]: i += 1
-            return match_pattern(input_line[1:], pattern[i+2:])
+            while i < len(input_line) and pattern[0] == input_line[i]: i += 1
+            return match_pattern(input_line[i:], pattern[i+2:])
     
     # Wildcard
     if pattern[0] == '.':
