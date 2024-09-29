@@ -3,30 +3,38 @@ import sys
 # import pyparsing - available if you need it!
 # import lark - available if you need it!
 
-def testing(input_line, pattern):
+def match_pattern(input_line, pattern):
+    print(f"Current input_line: [{input_line}]")
+    print(f"Current pattern: [{pattern}]")
+    print("")
+
     # Base cases
     if not pattern: return True
     if not input_line: return False
+    
     # Matching a singular character
-    if pattern[0] == input_line: testing(input_line[1:], pattern[1:])
+    if pattern[0] == input_line[0]: 
+        return match_pattern(input_line[1:], pattern[1:])
+
     # Match digit or alphanum
     if pattern[0] == '\\':
         if pattern[1] == 'w' and input_line[0].isalnum():
-            testing(input_line[1], pattern[2:])
+            return match_pattern(input_line[1:], pattern[2:])
         if pattern[1] == 'd' and input_line[0].isdigit():
-            testing(input_line[1], pattern[2:])
-    #Match group
+            return match_pattern(input_line[1:], pattern[2:])
+
+    # Match group
     if pattern[0] == '[':
-        opposite, i, group = 1, 1, set()
+        opposite, i, group = 1, 1, set() # i chose to make a set because I could guarantee that I'd leave the []
         if pattern[1] == '^': 
             i, opposite = 2, 0
         while pattern[i] != ']':
             group.add(pattern[i])
         if input_line[0] in group == opposite:
-            testing(input_line[1:], pattern[i:])
-        else:
-            return False
-    testing(input_line[1:], pattern)
+            return match_pattern(input_line[1:], pattern[i+1:])
+
+    # Nothing found
+    return False
 
 #def match_pattern(input_line, pattern):
 #    if len(pattern) == 1:
@@ -51,13 +59,11 @@ def main():
         print("Expected first argument to be '-E'")
         exit(1)
 
-    # You can use print statements as follows for debugging, they'll be visible when running tests.
-    #print("Logs from your program will appear here!")
-
-    # Uncomment this block to pass the first stage
-    if testing(input_line, pattern):
+    if any(match_pattern(input_line[i:], pattern) for i in range(len(input_line))):
+        print("Hit!")
         exit(0)
     else:
+        print("L")
         exit(1)
 
 
