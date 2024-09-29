@@ -33,6 +33,20 @@ def match_pattern(input_line, pattern):
             i += 1
         return match_pattern(input_line[i:], pattern[1:])
 
+    # Alternation
+    if pattern[0] == '(':
+        i, alternatives, cur = 1, [], ""
+        while pattern[i] != ')':
+            print(f"---cur: {cur}")
+            if pattern[i] == '|':
+                alternatives.append(cur)
+                cur = ""
+            else: cur += pattern[i]
+            i += 1
+        alternatives.append(cur)
+        return any(match_pattern(input_line, option + pattern[i+1:]) for option in alternatives)
+
+
     # Matching a singular character
     if pattern[0] == input_line[0]: 
         return match_pattern(input_line[1:], pattern[1:])
